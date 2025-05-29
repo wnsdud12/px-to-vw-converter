@@ -14,10 +14,99 @@
   "contributes": {
     "commands": [
       {
-        "command": "px-to-vw-converter.helloWorld",
-        "title": "Hello World"
+        "command": "px-to-vw-converter.convert",
+        "title": "Convert px to vw"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "PX to VW Converter",
+      "properties": {
+        "pxToVwConverter.decimalPlaces": {
+          "type": "number",
+          "default": 2,
+          "description": "vw 단위 소수점 자리수 (예: 2 → 75.52vw)"
+        },
+        "pxToVwConverter.removeProps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "display",
+            "position",
+            "z-index",
+            "float",
+            "clear",
+            "contain",
+            "resize",
+            "isolation",
+            "will-change",
+            "visibility",
+            "box-sizing",
+            "overflow",
+            "overflow-x",
+            "overflow-y",
+            "backface-visibility",
+            "flex-direction",
+            "flex-wrap",
+            "justify-content",
+            "justify-items",
+            "justify-self",
+            "align-items",
+            "align-content",
+            "align-self",
+            "place-content",
+            "place-items",
+            "place-self",
+            "grid-auto-flow",
+            "text-align",
+            "text-transform",
+            "white-space",
+            "word-break",
+            "overflow-wrap",
+            "hyphens",
+            "direction",
+            "writing-mode",
+            "font-style",
+            "font-variant",
+            "font-weight",
+            "font-family",
+            "color",
+            "background-blend-mode",
+            "mix-blend-mode",
+            "background-attachment",
+            "background-clip",
+            "background-origin",
+            "background-repeat",
+            "image-rendering",
+            "pointer-events",
+            "user-select",
+            "touch-action",
+            "cursor",
+            "appearance",
+            "content",
+            "quotes",
+            "text-decoration",
+            "text-decoration-line",
+            "text-decoration-style",
+            "text-decoration-color",
+            "text-rendering",
+            "caption-side",
+            "empty-cells",
+            "list-style",
+            "list-style-position",
+            "list-style-type",
+            "animation-name",
+            "animation-play-state",
+            "animation-direction",
+            "animation-fill-mode",
+            "transition-property",
+            "transition-timing-function"
+          ],
+          "description": "media query 내 제거할 속성 목록"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",
@@ -30,6 +119,7 @@
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
     "check-types": "tsc --noEmit",
+    "build": "esbuild src/extension.ts --bundle --platform=node --target=node18 --outfile=dist/extension.js --external:vscode",
     "lint": "eslint src",
     "test": "vscode-test"
   },

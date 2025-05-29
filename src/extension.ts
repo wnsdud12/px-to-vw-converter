@@ -1,26 +1,103 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
+import { removePropsList } from "./removePropsList";
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
+  const disposable = vscode.commands.registerCommand(
+    "px-to-vw-converter.convert",
+    async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "px-to-vw-converter" is now active!');
+      const selection = editor.selection;
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('px-to-vw-converter.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from px-to-vw-converter!');
-	});
+      if (selection.isEmpty) {
+        vscode.window.showInformationMessage("선택된 영역이 없습니다.");
+        return;
+      }
 
-	context.subscriptions.push(disposable);
+      const selectedText = editor.document.getText(selection);
+
+      // 설정값 읽기
+      const config = vscode.workspace.getConfiguration("pxToVwConverter");
+      const decimalPlaces = config.get<number>("decimalPlaces", 2);
+      const defaultRemoveProps = config.get<string[]>("removeProps", removePropsList);
+
+      // 기준 해상도 입력
+      const baseWidthInput = await vscode.window.showInputBox({
+        prompt: "기준 해상도(px)를 입력하세요 (예: 1920)",
+        value: "1920",
+        validateInput: (value) =>
+          isNaN(Number(value)) ? "숫자를 입력하세요" : null,
+      });
+
+      const baseWidth = parseFloat(baseWidthInput ?? "1920");
+      if (!baseWidth || isNaN(baseWidth)) {
+        vscode.window.showErrorMessage("유효하지 않은 해상도입니다.");
+        return;
+      }
+
+      // 불필요한 속성 제거 여부
+      const removePropsAnswer = await vscode.window.showQuickPick(
+        ["예", "아니오"],
+        {
+          placeHolder: "media query 내 불필요한 속성(display 등)을 제거할까요?",
+        }
+      );
+
+      const shouldRemoveProps = removePropsAnswer === "예";
+
+      const convertedLines = selectedText
+        .split("\n")
+        .map((line) => {
+          const trimmed = line.trim();
+
+          if (shouldRemoveProps) {
+            const shouldRemove = defaultRemoveProps.some((prop) =>
+              trimmed.startsWith(prop)
+            );
+            if (shouldRemove) {
+              return ""; // 속성 제거
+            }
+          }
+
+          return line.replace(/(\d+(\.\d+)?)px/g, (_, px) => {
+            const value = parseFloat(px);
+            const vw = (value / baseWidth) * 100;
+            return `${vw.toFixed(decimalPlaces)}vw`;
+          });
+        })
+        .filter(Boolean); // 빈 줄 제거
+
+      if (convertedLines.length === 0) {
+        vscode.window.showInformationMessage("변환할 유효한 CSS가 없습니다.");
+        return;
+      }
+
+      // media query 블록 생성
+      const mediaBlock = [
+        "",
+        `@media screen and (max-width: ${baseWidth}px) {`,
+        ...convertedLines.map((line) => `  ${line}`),
+        "}",
+        "",
+      ].join("\n");
+
+      const lastLine = editor.document.lineAt(editor.document.lineCount - 1)
+        .range.end;
+
+      editor.edit((editBuilder) => {
+        editBuilder.insert(lastLine, mediaBlock);
+      });
+
+      vscode.window.showInformationMessage(
+        "px → vw 변환 및 media query 추가 완료!"
+      );
+    }
+  );
+
+  context.subscriptions.push(disposable);
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}
