@@ -1,71 +1,30 @@
-# px-to-vw-converter README
+# px-to-vw-converter
 
-This is the README for your extension "px-to-vw-converter". After writing up a brief description, we recommend including the following sections.
+CSS에서 `px` 단위를 `vw`로 자동 변환해주는 VSCode Extension입니다.  
+미디어쿼리 형태로 삽입되며, 기준 해상도와 소수점 자릿수 설정, 불필요한 속성 제거 여부도 설정할 수 있습니다.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- px → vw 단위 변환
+- 선택된 CSS만 변환
+- 기준 해상도 입력
+- 미디어쿼리로 삽입
+- display, position 등 제거 옵션
+- 소수점 자릿수 설정 가능
 
-For example if there is an image subfolder under your extension project workspace:
+## 사용 방법
 
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
-
-## Requirements
-
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+1. 변환할 CSS를 선택
+2. 명령어 팔레트 (Cmd+Shift+P) → `px to vw convert` 실행
+3. 설정값 입력 후 자동 삽입
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- `pxToVwConverter.decimalPlaces`: 변환 시 소수점 자릿수
+- `pxToVwConverter.removeProps`: 제거할 CSS 속성 배열
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.1.0
 
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+- 초기 배포

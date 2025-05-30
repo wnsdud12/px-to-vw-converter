@@ -2,7 +2,12 @@
   "name": "px-to-vw-converter",
   "displayName": "px-to-vw-converter",
   "description": "vw 단위 기반 반응형 CSS 작성을 위한 px → vw 변환 도구입니다.",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "publisher": "px-to-vw-converter",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wnsdud12/px-to-vw-converter.git"
+  },
   "engines": {
     "vscode": "^1.100.0"
   },
