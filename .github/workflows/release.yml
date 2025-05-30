@@ -1,0 +1,23 @@
+name: Release on Tag
+
+on:
+  push:
+    tags:
+      - 'v*' # v0.1.0, v1.2.3 등
+  workflow_dispatch: # 수동 실행도 허용
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
