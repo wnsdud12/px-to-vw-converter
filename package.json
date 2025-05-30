@@ -4,6 +4,11 @@
   "description": "vw 단위 기반 반응형 CSS 작성을 위한 px → vw 변환 도구입니다.",
   "version": "0.1.0",
   "publisher": "px-to-vw-converter",
+  "license": "MIT",
+  "homepage": "https://github.com/wnsdud12/px-to-vw-converter",
+  "bugs": {
+    "url": "https://github.com/wnsdud12/px-to-vw-converter/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/wnsdud12/px-to-vw-converter.git"
@@ -12,7 +17,20 @@
     "vscode": "^1.100.0"
   },
   "categories": [
-    "Other"
+    "Formatters",
+    "Themes",
+    "Snippets"
+  ],
+  "keywords": [
+    "vscode",
+    "extension",
+    "px",
+    "vw",
+    "responsive",
+    "converter",
+    "viewport",
+    "css",
+    "scss"
   ],
   "activationEvents": [],
   "main": "./dist/extension.js",
