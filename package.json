@@ -39,6 +39,10 @@
       {
         "command": "px-to-vw-converter.convert",
         "title": "Convert px to vw"
+      },
+      {
+        "command": "px-to-vw-converter.reverseConvert",
+        "title": "Convert vw to px"
       }
     ],
     "configuration": {
