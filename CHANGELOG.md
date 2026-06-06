@@ -1,3 +1,15 @@
+### 0.4.0 (2026-06-06)
+
+##### Chores
+
+*  test code 작성 ([c1ae5f9d](https://github.com/wnsdud12/px-to-vw-converter/commit/c1ae5f9de944993a70681b2723372b3dc42917d9))
+*  add comment ([11a54177](https://github.com/wnsdud12/px-to-vw-converter/commit/11a5417774954fbe862d5c2d92f09d282cedcfd0))
+*  lint ([bb1ffc35](https://github.com/wnsdud12/px-to-vw-converter/commit/bb1ffc3538e39a24a85e0451385b17d521d469da))
+
+##### New Features
+
+*  선택한 영역 치환 / 파일 하단에 추가 분기 ([ccede575](https://github.com/wnsdud12/px-to-vw-converter/commit/ccede5753a43ce27c11721208812b91192973576))
+
 # Change Log
 
 All notable changes to the "px-to-vw-converter" extension will be documented in this file.

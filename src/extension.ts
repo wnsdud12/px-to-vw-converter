@@ -1,72 +1,8 @@
 // VS Code 확장 API 전체를 vscode 네임스페이스로 가져옵니다.
 import * as vscode from "vscode";
+import { convertLines, buildMediaBlock, ConvertDirection } from "./converter";
 // package.json 기본값과 동일한 "제거할 속성" 목록 (설정이 없을 때 fallback으로 사용)
 import { removePropsList } from "./removePropsList";
-
-// 변환 방향: px → vw 또는 vw → px
-type ConvertDirection = "pxToVw" | "vwToPx";
-
-/**
- * 선택한 CSS 텍스트를 줄 단위로 변환합니다.
- * shouldRemoveProps가 true이면 removeProps 목록에 해당하는 줄은 제거합니다.
- */
-function convertLines(
-  selectedText: string,
-  direction: ConvertDirection,
-  baseWidth: number,
-  shouldRemoveProps: boolean,
-  removeProps: string[],
-  decimalPlaces: number
-): string[] {
-  return selectedText
-    .split("\n")
-    .map((line) => {
-      const trimmed = line.trim();
-
-      // 제거 대상 속성(display, position 등)으로 시작하는 줄은 빈 문자열로 만듭니다.
-      if (shouldRemoveProps) {
-        const shouldRemove = removeProps.some((prop) =>
-          trimmed.startsWith(prop)
-        );
-        if (shouldRemove) {
-          return "";
-        }
-      }
-
-      if (direction === "pxToVw") {
-        // 공식: vw = (px값 / 기준해상도) × 100
-        return line.replace(/(\d+(\.\d+)?)px/g, (_, px) => {
-          const value = parseFloat(px);
-          const vw = (value / baseWidth) * 100;
-          return `${vw.toFixed(decimalPlaces)}vw`;
-        });
-      }
-
-      // 공식: px = (vw값 × 기준해상도) / 100 → Math.round로 정수 px 반환
-      return line.replace(/(\d+(\.\d+)?)vw/g, (_, vw) => {
-        const value = parseFloat(vw);
-        const px = Math.round((value * baseWidth) / 100);
-        return `${px}px`;
-      });
-    })
-    .filter(Boolean);
-}
-
-/**
- * 변환된 줄을 @media 블록 문자열로 조립합니다.
- */
-function buildMediaBlock(
-  convertedLines: string[],
-  baseWidth: number
-): string {
-  return [
-    "",
-    `@media screen and (max-width: ${baseWidth}px) {`,
-    ...convertedLines.map((line) => `  ${line}`),
-    "}",
-    "",
-  ].join("\n");
-}
 
 /**
  * px ↔ vw 변환 명령의 공통 실행 흐름입니다.
