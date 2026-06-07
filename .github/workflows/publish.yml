@@ -1,9 +1,12 @@
-name: Publish VSCode Extension
+name: Publish Extension
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
 
 jobs:
   publish:
@@ -12,17 +15,49 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
       - name: Build extension
-        run: yarn build
+        run: yarn run package
 
-      - name: Publish to VSCode Marketplace
-        run: npx vsce publish -p ${{ secrets.VSCE_TOKEN }}
+      - name: Package VSIX
+        run: npx @vscode/vsce package
+
+      - name: Get package info
+        id: package
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          NAME=$(node -p "require('./package.json').name")
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "name=$NAME" >> $GITHUB_OUTPUT
+          echo "vsix=$NAME-$VERSION.vsix" >> $GITHUB_OUTPUT
+
+      - name: Publish to VS Code Marketplace
+        run: |
+          npx @vscode/vsce publish \
+            --packagePath ${{ steps.package.outputs.vsix }} \
+            -p ${{ secrets.VSCE_TOKEN }}
+
+      - name: Publish to Open VSX
+        run: |
+          npx ovsx publish \
+            ${{ steps.package.outputs.vsix }} \
+            -p ${{ secrets.OPEN_VSX_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ steps.package.outputs.vsix }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
